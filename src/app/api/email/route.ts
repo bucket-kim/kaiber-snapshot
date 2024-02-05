@@ -5,10 +5,8 @@ import { Resend } from "resend";
 
 const resend = new Resend(`${process.env.RESEND_API_KEY}`);
 
-console.log(resend);
-
 export async function POST(req: Request, res: NextApiResponse) {
-  const { firstName, email } = await req.json();
+  const { firstName, email, videoUrl } = await req.json();
 
   await resend.emails.send({
     from: "onboarding@resend.dev",
@@ -16,6 +14,7 @@ export async function POST(req: Request, res: NextApiResponse) {
     subject: "Hello world",
     react: Email({
       firstName,
+      videoUrl,
     }),
   });
 

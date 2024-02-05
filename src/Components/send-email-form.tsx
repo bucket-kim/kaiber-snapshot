@@ -1,39 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { SyntheticEvent, useState } from "react";
 import { Input } from "./UI/input";
 import { Button } from "./UI/button";
+import Axios from "axios";
 
 const SendEmailForm = () => {
   const [state, setState] = useState<string>();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
 
-  const isInputNamedElement = (
-    e: Element
-  ): e is HTMLInputElement & { name: string } => {
-    return "value" in e && "name" in e;
-  };
-
-  const handleOnSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-
-    const formData: Record<string, string> = {};
-
-    Array.from(e.currentTarget.elements)
-      .filter(isInputNamedElement)
-      .forEach((field) => {
-        if (!field.name) return;
-        formData[field.name] = field.value;
-      });
 
     setState("loading");
 
-    await fetch("/api/email", {
-      method: "POST",
-      body: JSON.stringify({
-        firstName: formData.firstName,
-        email: formData.email,
-      }),
-    });
+    try {
+      await Axios.post("http://localhost:8080/api/clients", {
+        clientName: name,
+        emailAddress: email,
+      });
+    } catch (error) {
+      console.log(error);
+    }
 
     setTimeout(() => {
       setState("ready");
@@ -41,14 +30,28 @@ const SendEmailForm = () => {
   };
 
   return (
-    <form className="mail-container" onSubmit={handleOnSubmit}>
+    <form className="mail-container" onSubmit={handleSubmit}>
       <div>
         <label htmlFor="name">Name:</label>
-        <Input id="firstName" name="firstName" />
+        <input
+          className="Name"
+          type="text"
+          placeholder="name..."
+          onChange={(e) => {
+            setName(e.target.value);
+          }}
+        />
       </div>
       <div>
         <label htmlFor="email">Email:</label>
-        <Input id="email" name="email" />
+        <input
+          className="email"
+          type="text"
+          placeholder="email..."
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+        />
       </div>
       <Button className="mail-button" disabled={state === "loading"}>
         Send

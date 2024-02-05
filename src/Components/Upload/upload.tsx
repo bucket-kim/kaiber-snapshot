@@ -73,19 +73,57 @@ const Upload = () => {
     );
   };
 
-  const handleSubmit = async (e: SyntheticEvent) => {
-    e.preventDefault();
-    try {
-      await axios.post("http://localhost:5000/api/videos", { ...inputs });
-    } catch (error) {
-      console.log(error);
-    }
-    console.log("submit");
-  };
-
   useEffect(() => {
     video && uploadFile(video, "videoUrl");
   }, [video]);
+
+  useEffect(() => {
+    console.log(inputs);
+  }, [inputs]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/clients")
+      .then((response) => {
+        // Handle successful response
+        console.log(response.data); // This will log the data returned from the API
+      })
+      .catch((error) => {
+        // Handle error
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    try {
+      await uploadFile(video, "videoUrl");
+
+      const clientsResponse = await axios.get(
+        "http://localhost:8080/api/clients"
+      );
+
+      const clientData = clientsResponse.data;
+
+      console.log(clientData);
+
+      await Promise.all(
+        clientData.map(async (client: any) => {
+          const { clientName, emailAddress } = client;
+
+          await axios.post("http://localhost:8080/send-email", {
+            clientName,
+            email: emailAddress,
+            // videoUrl: inputs.videoUrl,
+          });
+        })
+      );
+      await axios.post("http://localhost:8080/api/videos", { ...inputs });
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>

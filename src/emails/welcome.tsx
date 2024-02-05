@@ -7,20 +7,22 @@ import {
   Preview,
   Text,
 } from "@react-email/components";
+import { Link } from "@react-email/components";
 import * as React from "react";
 
 interface EmailProps {
   firstName: string;
+  videoUrl: string;
 }
 
-const Email = ({ firstName }: EmailProps) => (
+const Email = ({ firstName, videoUrl }: EmailProps) => (
   <Html>
     <Head />
     <Preview>Welcome to Kaiber snapshot!</Preview>
     <Body style={main}>
       <Container style={container}>
         <Heading style={h1}>Welcome to Kaiber snapshot {firstName}!</Heading>
-
+        <Link href={videoUrl}>Download</Link>
         <Text style={{ ...text, marginBottom: "14px" }}>
           Thank you for viewing snapshot
         </Text>
