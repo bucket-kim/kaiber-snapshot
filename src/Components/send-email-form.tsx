@@ -15,6 +15,11 @@ const SendEmailForm = () => {
 
     setState("loading");
 
+    console.log("Data to be posted:", {
+      clientName: name,
+      emailAddress: email,
+    });
+
     try {
       await Axios.post("http://localhost:8080/api/clients", {
         clientName: name,

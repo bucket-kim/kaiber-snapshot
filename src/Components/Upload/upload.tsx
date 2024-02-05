@@ -73,9 +73,9 @@ const Upload = () => {
     );
   };
 
-  useEffect(() => {
-    video && uploadFile(video, "videoUrl");
-  }, [video]);
+  // useEffect(() => {
+  //   video && uploadFile(video, "videoUrl");
+  // }, [video]);
 
   useEffect(() => {
     console.log(inputs);
@@ -105,7 +105,7 @@ const Upload = () => {
 
       const clientData = clientsResponse.data;
 
-      console.log(clientData);
+      console.log(clientsResponse);
 
       await Promise.all(
         clientData.map(async (client: any) => {
